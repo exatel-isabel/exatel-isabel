@@ -15,7 +15,6 @@ jobs:
 
         # Build Website
         - name: Build Website
-        - uses: dart-lang/setup-dart@v1
           run: |
             flutter config --enable-web
             flutter pub get
