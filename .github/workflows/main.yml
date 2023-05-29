@@ -11,10 +11,11 @@ jobs:
         # Install Flutter command
         - uses: subosito/flutter-action@v2.8.0
           with:
-            channel: 'dev'
+            channel: 'stable'
 
         # Build Website
         - name: Build Website
+        - uses: dart-lang/setup-dart@v1
           run: |
             flutter config --enable-web
             flutter pub get
