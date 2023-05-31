@@ -1,29 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:isabel/api/firebase_auth.dart';
 import 'package:isabel/routes.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SigninPage extends StatefulWidget {
+  const SigninPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SigninPage> createState() => _SigninPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SigninPageState extends State<SigninPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  bool isVisiblePassword = true, isAuth = false;
+  bool isVisiblePassword = true, isAuth = false, isLoading = false;
 
   snacks(String text) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
   }
 
   validation() async {
-    if (emailController.text.isEmpty ||
-        passwordController.text.isEmpty ||
-        !emailController.text.contains('@')) {
-      snacks("E-mail e Senha inválidos!");
+    if (!emailController.text.trim().isNotEmail) {
+      snacks("Digite seu e-mail!");
+    } else if (passwordController.text.trim().length < 6) {
+      snacks("Digite sua senha com 6 ou mais caracteres!");
     } else {
-      // fazer login
+      setState(() {
+        isLoading = true;
+      });
+      await FireAuth()
+          .signin(emailController.text.trim(), passwordController.text.trim())
+          .then((value) {
+        value == ""
+            ? Navigator.of(context)
+                .pushNamedAndRemoveUntil(Routes.homePage, (route) => false)
+            : (value == "Senha errada!")
+                ? snacks("Senha errada!")
+                : snacks("E-mail não cadastrado!");
+      });
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -37,27 +53,23 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
+      body: Container(
         color: Colors.white,
-        child: FractionallySizedBox(
-          widthFactor: 0.5,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Flexible(
-                child: Image(
+        child: Center(
+          child: FractionallySizedBox(
+            widthFactor: 0.5,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Image(
                   image: AssetImage('assets/logo.jpeg'),
                   width: 150,
                   height: 150,
                 ),
-              ),
-              const SizedBox(height: 15),
-              Flexible(
-                child: TextFormField(
+                const SizedBox(height: 15),
+                TextFormField(
                   controller: emailController,
+                  autofocus: true,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -80,10 +92,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              Flexible(
-                child: TextFormField(
+                const SizedBox(height: 15),
+                TextFormField(
                   controller: passwordController,
                   onFieldSubmitted: (value) => validation(),
                   keyboardType: TextInputType.text,
@@ -119,11 +129,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Flexible(
-                child: Row(
+                const SizedBox(height: 10),
+                Row(
                   children: [
+                    /*
                     Checkbox(
                       activeColor: Colors.black,
                       value: isAuth,
@@ -135,47 +144,46 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(width: 5),
                     const Text("Manter-me conectado"),
+                    */
                     const Expanded(child: SizedBox()),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {}, //codigo para recuperar senha
                       child: const Text(
-                        "Esqueci-me a senha",
+                        "Esqueceu sua senha?",
                         style: TextStyle(color: Colors.red),
                       ),
                     ),
                   ],
                 ),
-              ),
-              const SizedBox(height: 10),
-              Flexible(
-                child: ElevatedButton(
+                const SizedBox(height: 10),
+                ElevatedButton(
                   onPressed: () => validation(),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: const Text(
-                    "Login",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.black)
+                      : const Text(
+                          "Login",
+                          style: TextStyle(color: Colors.white),
+                        ),
                 ),
-              ),
-              const SizedBox(height: 15),
-              const Text("-------- ou --------"),
-              const SizedBox(height: 15),
-              Flexible(
-                child: ElevatedButton(
-                  onPressed: () => Navigator.of(context)
-                      .pushNamedAndRemoveUntil(
-                          Routes.signupPage, (route) => false),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                const SizedBox(height: 15),
+                const Text("-------- ou --------"),
+                const SizedBox(height: 15),
+                ElevatedButton(
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(Routes.signupPage),
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
                   child: const Text(
                     "Cadastre-se",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ));
+    );
   }
 }
