@@ -10,6 +10,9 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.amber);
+    return Container(
+      height: 200,
+      color: Colors.amber,
+    );
   }
 }

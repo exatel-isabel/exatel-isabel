@@ -18,38 +18,6 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /*
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        elevation: 0,
-        title: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-          ),
-          onPressed: () {
-            showDatePicker(
-                    context: context,
-                    initialDate: datePicked!,
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100))
-                .then((DateTime? date) {
-              if (date != null) {
-                setState(() {
-                  _controller.selectedDate = date;
-                  _controller.displayDate = date;
-                  _controller.view = CalendarView.day;
-                });
-              }
-            });
-          },
-          child: const Text(
-            "Selecione o dia",
-            style: TextStyle(
-              color: Colors.black,
-            ),
-          ),
-        ),
-      ),*/
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => showMaterialModalBottomSheet(
           context: context,

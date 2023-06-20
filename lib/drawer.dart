@@ -43,6 +43,13 @@ class _DrawerPageState extends State<DrawerPage> {
                 fontWeight: FontWeight.w700,
               ),
             ),
+            trailing: IconButton(
+              onPressed: () {}, // adiconar pesquisa de tarefas
+              icon: const Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+            ),
           ),
           key: _sliderDrawerKey,
           sliderOpenSize: 179,
@@ -82,8 +89,6 @@ class _SliderView extends StatefulWidget {
 }
 
 class _SliderViewState extends State<_SliderView> {
-  String? user = FirebaseAuth.instance.currentUser?.email;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -92,10 +97,10 @@ class _SliderViewState extends State<_SliderView> {
       child: ListView(
         children: <Widget>[
           const SizedBox(height: 20),
-          Text(
-            user!.isEmpty ? "Usuario" : user!,
+          const Text(
+            "Name",
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 30,
@@ -104,6 +109,7 @@ class _SliderViewState extends State<_SliderView> {
           const SizedBox(height: 20),
           ...[
             Menu(Icons.calendar_month, 'Agenda'),
+            Menu(Icons.person_outline, 'Perfil'),
             Menu(Icons.logout_rounded, 'Sair')
           ]
               .map((menu) => _SliderMenuItem(

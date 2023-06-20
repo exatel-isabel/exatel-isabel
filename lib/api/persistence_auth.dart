@@ -15,13 +15,14 @@ class _PersistenceAuthState extends State<PersistenceAuth> {
   isAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user == null) {
-        //debugPrint('User is currently signed out!');
+        debugPrint('User is currently signed out!');
         page = false;
       } else {
-        //debugPrint('User is signed in!');
+        debugPrint('User is signed in!');
         page = true;
       }
       if (isPersistence) {
+        debugPrint("isPersistence");
         isPersistence = false;
         if (page) {
           Navigator.of(context)

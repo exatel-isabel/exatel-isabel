@@ -25,9 +25,9 @@ class FireAuth {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      if (e.message!.contains("user-not-found")) {
+      if (e.message!.contains("no user")) {
         return "E-mail não cadastrado!";
-      } else if (e.message!.contains("wrong-password")) {
+      } else if (e.message!.contains("password is invalid")) {
         return "Senha errada!";
       }
     }

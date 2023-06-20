@@ -30,6 +30,7 @@ class _SigninPageState extends State<SigninPage> {
       await FireAuth()
           .signin(emailController.text.trim(), passwordController.text.trim())
           .then((value) {
+        debugPrint("signin-login");
         value == ""
             ? Navigator.of(context)
                 .pushNamedAndRemoveUntil(Routes.drawerPage, (route) => false)
