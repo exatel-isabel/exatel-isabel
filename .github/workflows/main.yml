@@ -17,7 +17,7 @@ jobs:
         - name: Build Website
           run: |
             flutter clean
-            flutter build web --release
+            flutter build web
           working-directory: ./
 
         # Deploy Firebase Hosting
