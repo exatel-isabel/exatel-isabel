@@ -27,16 +27,21 @@ class _SigninPageState extends State<SigninPage> {
       setState(() {
         isLoading = true;
       });
+      await Future.delayed(const Duration(seconds: 2));
       await FireAuth()
           .signin(emailController.text.trim(), passwordController.text.trim())
           .then((value) {
-        debugPrint("signin-login");
-        value == ""
-            ? Navigator.of(context)
-                .pushNamedAndRemoveUntil(Routes.drawerPage, (route) => false)
-            : (value == "Senha errada!")
-                ? snacks("Senha errada!")
-                : snacks("E-mail não cadastrado!");
+        debugPrint(value);
+        if (value == "") {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(Routes.drawerPage, (route) => false);
+        } else {
+          if (value == "Senha errada!") {
+            snacks("Senha errada!");
+          } else {
+            snacks("E-mail não cadastrado!");
+          }
+        }
       });
       setState(() {
         isLoading = false;

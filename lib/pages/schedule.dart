@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide ModalBottomSheetRoute;
 import 'package:flutter/scheduler.dart';
 import 'package:isabel/pages/task.dart';
@@ -13,7 +14,74 @@ class SchedulePage extends StatefulWidget {
 
 class _SchedulePageState extends State<SchedulePage> {
   final CalendarController _controller = CalendarController();
+  final textController = TextEditingController();
   DateTime? datePicked = DateTime.now();
+  bool isLoading = false;
+
+  updateName(BuildContext context) {
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        if (user.displayName == null) {
+          showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                content: StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextField(
+                          controller: textController,
+                          decoration: const InputDecoration(
+                              hintText: "Nome e sobrenome"),
+                        ),
+                        const SizedBox(height: 15),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Expanded(child: SizedBox()),
+                            TextButton(
+                              onPressed: () async {
+                                setState(() {
+                                  isLoading = true;
+                                  debugPrint("entrou");
+                                });
+                                await user.updateDisplayName(
+                                    textController.text.trim());
+                                await Future.delayed(
+                                    const Duration(seconds: 4));
+                                setState(() {
+                                  isLoading = false;
+                                  debugPrint("saiu");
+                                  Navigator.of(context).pop();
+                                });
+                              },
+                              child: isLoading
+                                  ? const CircularProgressIndicator()
+                                  : const Text("Adicionar"),
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                ),
+              );
+            },
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance
+        .addPostFrameCallback((timeStamp) => updateName(context));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

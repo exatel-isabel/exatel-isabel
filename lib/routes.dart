@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:isabel/api/persistence_auth.dart';
 import 'package:isabel/drawer.dart';
-import 'package:isabel/pages/new_password.dart';
-import 'package:isabel/pages/signin.dart';
-import 'package:isabel/pages/signup.dart';
+import 'package:isabel/pages/CRUD/new_password.dart';
+import 'package:isabel/pages/CRUD/signin.dart';
+import 'package:isabel/pages/CRUD/signup.dart';
 
 class Routes {
   static const String signupPage = "/signup";

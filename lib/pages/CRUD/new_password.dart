@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:isabel/api/firebase_auth.dart';
 import 'package:isabel/routes.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class NewPasswordPage extends StatefulWidget {
+  const NewPasswordPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<NewPasswordPage> createState() => _NewPasswordPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _NewPasswordPageState extends State<NewPasswordPage> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
 
   snacks(String text) {
@@ -21,21 +20,25 @@ class _SignupPageState extends State<SignupPage> {
   validation() async {
     if (!emailController.text.trim().isNotEmail) {
       snacks("E-mail invalido!");
-    } else if (passwordController.text.trim().length < 6) {
-      snacks("Senha deve conter pelo menos 6 caracteres!");
     } else {
       setState(() {
         isLoading = true;
       });
-      await FireAuth().signup(emailController.text.trim(),
-                  passwordController.text.trim()) ==
-              ""
-          ? {
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(Routes.signinPage, (route) => false),
-              snacks("Faça login novamente!")
-            }
-          : snacks("E-mail já cadastrado");
+      await Future.delayed(const Duration(seconds: 2));
+      await FireAuth()
+          .signin(emailController.text.trim(), "******")
+          .then((value) {
+        if (value == "Senha errada!") {
+          FireAuth().sendEmailPassword(emailController.text.trim());
+          snacks(
+              "Verifique sua caixa de entrada em ${emailController.text.trim()}");
+          Navigator.pop(context);
+        } else {
+          Navigator.of(context).popAndPushNamed(Routes.signupPage);
+          snacks("E-mail não cadastrado!");
+        }
+      });
+
       setState(() {
         isLoading = false;
       });
@@ -45,7 +48,6 @@ class _SignupPageState extends State<SignupPage> {
   @override
   void dispose() {
     emailController.dispose();
-    passwordController.dispose();
     super.dispose();
   }
 
@@ -68,7 +70,7 @@ class _SignupPageState extends State<SignupPage> {
                       Icons.arrow_back_ios_new_rounded,
                       color: Colors.black,
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -94,7 +96,7 @@ class _SignupPageState extends State<SignupPage> {
                     const SizedBox(height: 15),
                     TextFormField(
                       controller: emailController,
-                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (value) => validation(),
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
                         labelStyle: const TextStyle(
@@ -117,31 +119,6 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                     ),
                     const SizedBox(height: 15),
-                    TextFormField(
-                      controller: passwordController,
-                      onFieldSubmitted: (value) => validation(),
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        labelStyle: const TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        labelText: "Senha",
-                        prefixIcon: const Icon(
-                          Icons.lock,
-                          color: Colors.blue,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.blue),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
                     ElevatedButton(
                       onPressed: () => validation(),
                       style: ElevatedButton.styleFrom(
@@ -149,7 +126,7 @@ class _SignupPageState extends State<SignupPage> {
                       child: isLoading
                           ? const CircularProgressIndicator(color: Colors.black)
                           : const Text(
-                              "Cadastrar",
+                              "Enviar e-mail",
                               style: TextStyle(color: Colors.white),
                             ),
                     ),

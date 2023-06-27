@@ -10,21 +10,12 @@ class PersistenceAuth extends StatefulWidget {
 }
 
 class _PersistenceAuthState extends State<PersistenceAuth> {
-  bool isPersistence = true, page = false;
-
+  bool isFirst = true;
   isAuth() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        debugPrint('User is currently signed out!');
-        page = false;
-      } else {
-        debugPrint('User is signed in!');
-        page = true;
-      }
-      if (isPersistence) {
-        debugPrint("isPersistence");
-        isPersistence = false;
-        if (page) {
+      if (isFirst) {
+        isFirst = false;
+        if (user != null) {
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Routes.drawerPage, (route) => false);
         } else {
@@ -37,7 +28,7 @@ class _PersistenceAuthState extends State<PersistenceAuth> {
 
   @override
   void initState() {
-    isAuth();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => isAuth());
     super.initState();
   }
 

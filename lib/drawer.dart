@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
+import 'package:isabel/api/firebase_auth.dart';
 import 'package:isabel/pages/schedule.dart';
 import 'package:isabel/routes.dart';
 
@@ -58,7 +59,7 @@ class _DrawerPageState extends State<DrawerPage> {
               switch (title) {
                 case "Sair":
                   {
-                    await FirebaseAuth.instance.signOut().then((value) =>
+                    await FireAuth().logout().then((value) =>
                         Navigator.of(context).pushNamedAndRemoveUntil(
                             Routes.signinPage, (route) => false));
                     debugPrint("Saiu");
@@ -89,6 +90,13 @@ class _SliderView extends StatefulWidget {
 }
 
 class _SliderViewState extends State<_SliderView> {
+  String name() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return FirebaseAuth.instance.currentUser!.displayName!;
+    }
+    return "Name User";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,10 +105,10 @@ class _SliderViewState extends State<_SliderView> {
       child: ListView(
         children: <Widget>[
           const SizedBox(height: 20),
-          const Text(
-            "Name",
+          Text(
+            name(),
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold,
               fontSize: 30,

@@ -25,6 +25,8 @@ class FireAuth {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
+      debugPrint(e.code);
+      debugPrint(e.message);
       if (e.message!.contains("no user")) {
         return "E-mail não cadastrado!";
       } else if (e.message!.contains("password is invalid")) {
@@ -34,19 +36,14 @@ class FireAuth {
     return "";
   }
 
-  /// Verifica o usuario
-  int verificarUser() {
-    int res = 0;
-    FirebaseAuth.instance.userChanges().listen((User? user) {
-      if (user == null) {
-        debugPrint('User is currently signed out!');
-        res++;
-      } else {
-        debugPrint('User is signed in!');
-        res += 2;
-      }
-    });
-    return res;
+  /// Envia e-mail de redefinição de senha
+  Future<void> sendEmailPassword(String email) async {
+    await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+  }
+
+  /// Faz logout do usuario
+  Future<void> logout() async {
+    await FirebaseAuth.instance.signOut();
   }
 }
 
