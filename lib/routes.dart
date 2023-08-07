@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:isabel/api/persistence_auth.dart';
-import 'package:isabel/drawer.dart';
+import 'package:isabel/pages/CRUD/persistence_auth.dart';
+import 'package:isabel/pages/drawer.dart';
 import 'package:isabel/pages/CRUD/new_password.dart';
 import 'package:isabel/pages/CRUD/signin.dart';
 import 'package:isabel/pages/CRUD/signup.dart';
@@ -14,7 +14,7 @@ class Routes {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case "/":
-        return MaterialPageRoute(builder: (_) => const PersistenceAuth());
+        return MaterialPageRoute(builder: (_) => const PersistenceAuthPage());
       case signinPage:
         return MaterialPageRoute(builder: (_) => const SigninPage());
       case signupPage:

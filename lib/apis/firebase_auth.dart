@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 
 class FireAuth {
   /// Cadastrar usuario no firebase com e-mail e senha
@@ -25,8 +24,6 @@ class FireAuth {
         password: password,
       );
     } on FirebaseAuthException catch (e) {
-      debugPrint(e.code);
-      debugPrint(e.message);
       if (e.message!.contains("no user")) {
         return "E-mail não cadastrado!";
       } else if (e.message!.contains("password is invalid")) {
@@ -44,13 +41,5 @@ class FireAuth {
   /// Faz logout do usuario
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
-  }
-}
-
-extension EmailValidator on String {
-  bool get isNotEmail {
-    return RegExp(
-            r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
-        .hasMatch(this);
   }
 }

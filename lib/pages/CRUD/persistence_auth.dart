@@ -1,21 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:isabel/providers/funcionario_provider.dart';
 import 'package:isabel/routes.dart';
+import 'package:provider/provider.dart';
 
-class PersistenceAuth extends StatefulWidget {
-  const PersistenceAuth({super.key});
+class PersistenceAuthPage extends StatefulWidget {
+  const PersistenceAuthPage({super.key});
 
   @override
-  State<PersistenceAuth> createState() => _PersistenceAuthState();
+  State<PersistenceAuthPage> createState() => _PersistenceAuthPageState();
 }
 
-class _PersistenceAuthState extends State<PersistenceAuth> {
-  bool isFirst = true;
-  isAuth() {
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (isFirst) {
-        isFirst = false;
+class _PersistenceAuthPageState extends State<PersistenceAuthPage> {
+  bool isLogado = false;
+
+  @override
+  void initState() {
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      if (!isLogado) {
+        isLogado = !isLogado;
         if (user != null) {
+          context.read<FuncionarioProvider>().addFuncionario(
+                user.displayName!,
+                user.email!,
+              );
           Navigator.of(context)
               .pushNamedAndRemoveUntil(Routes.drawerPage, (route) => false);
         } else {
@@ -24,11 +32,6 @@ class _PersistenceAuthState extends State<PersistenceAuth> {
         }
       }
     });
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) => isAuth());
     super.initState();
   }
 
