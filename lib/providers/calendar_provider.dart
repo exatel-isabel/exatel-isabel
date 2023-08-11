@@ -53,6 +53,21 @@ class CalendarProvider with ChangeNotifier, DiagnosticableTreeMixin {
     _exatelDataSource
         .notifyListeners(CalendarDataSourceAction.add, <Meeting>[tarefa]);
     notifyListeners();
+    dateDafault();
+  }
+
+  void updateTarefa(Meeting tarefa) {
+    _task = tarefa;
+    notifyListeners();
+  }
+
+  void updateDate(DateTime date) {
+    _task.from = date;
+    _task.to = date.add(const Duration(hours: 1));
+    notifyListeners();
+  }
+
+  void dateDafault() {
     _task = Meeting(
       cliente: "",
       funcExecutar: [],
@@ -61,6 +76,7 @@ class CalendarProvider with ChangeNotifier, DiagnosticableTreeMixin {
       to: DateTime.now(),
       background: Colors.green,
     );
+    notifyListeners();
   }
 
   void goSelectedDate(DateTime? date) {

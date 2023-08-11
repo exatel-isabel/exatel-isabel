@@ -16,10 +16,11 @@ class TaskPage extends StatefulWidget {
 
 class _TaskPageState extends State<TaskPage> {
   SuggestionsBoxController suggestionBoxController = SuggestionsBoxController();
-  final TextEditingController typeAheadController = TextEditingController();
+  TextEditingController typeAheadController = TextEditingController();
   TextEditingController descricaoController = TextEditingController();
   List<String> funcionariosExatel = ["Selecione..."];
   List<String> clientesExatel = [];
+  List<String> carrosExatel = [];
   List<String> selected = [];
   late DateTime nowDay;
   Meeting? task;
@@ -27,7 +28,14 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     task = Provider.of<CalendarProvider>(context, listen: false).task;
+    typeAheadController = TextEditingController(text: task!.cliente);
     descricaoController = TextEditingController(text: task!.descricao);
+    carrosExatel = [
+      "Uno 4 portas",
+      "Palio do Paulo",
+      "Agile",
+      "MIZ for you",
+    ];
     nowDay = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -417,7 +425,9 @@ class _TaskPageState extends State<TaskPage> {
                       const Icon(Icons.replay_outlined),
                       const SizedBox(width: 20),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          // repetir tarefa
+                        },
                         child: const Text(
                           "Repete",
                           style: TextStyle(color: Colors.black),

@@ -16,6 +16,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return FloatingActionButton.extended(
       onPressed: () {
         setState(() {
+          context.read<CalendarProvider>().dateDafault();
           context.read<DrawerProvider>().updateTitle("Nova Tarefa");
           context.read<DrawerProvider>().mudarAddTarefa(true);
         });
@@ -39,7 +40,7 @@ class _SchedulePageState extends State<SchedulePage> {
           child: SfCalendar(
             appointmentTimeTextFormat: 'HH:mm',
             timeSlotViewSettings: const TimeSlotViewSettings(
-              timeFormat: 'h:mm a',
+              timeFormat: 'H:mm ',
               timeInterval: Duration(hours: 1),
               minimumAppointmentDuration: Duration(hours: 1),
             ),
@@ -68,10 +69,11 @@ class _SchedulePageState extends State<SchedulePage> {
                         .read<CalendarProvider>()
                         .goToDate(calendarTapDetails.date);
                   } else {
-                    setState(() {
-                      context.read<DrawerProvider>().updateTitle("Nova Tarefa");
-                      context.read<DrawerProvider>().mudarAddTarefa(true);
-                    });
+                    context
+                        .read<CalendarProvider>()
+                        .updateDate(calendarTapDetails.date!);
+                    context.read<DrawerProvider>().updateTitle("Nova Tarefa");
+                    context.read<DrawerProvider>().mudarAddTarefa(true);
                   }
                   break;
                 case CalendarElement.viewHeader:
@@ -85,7 +87,11 @@ class _SchedulePageState extends State<SchedulePage> {
                   }
                   break;
                 case CalendarElement.appointment:
-                  // Visualizar tarefa;
+                  context
+                      .read<CalendarProvider>()
+                      .updateTarefa(calendarTapDetails.appointments![0]);
+                  context.read<DrawerProvider>().updateTitle("Nova Tarefa");
+                  context.read<DrawerProvider>().mudarAddTarefa(true);
                   break;
                 case CalendarElement.moreAppointmentRegion:
                   context
